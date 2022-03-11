@@ -1,25 +1,18 @@
-import { useState } from "react";
+import { Route, Routes } from "react-router";
 import "./App.css";
-import "./tailwind.css";
-import Header from "./Header.js";
-
-import Form from "./Form";
-import Arraypractice from "./Arraypractice";
-import SecondaryNav from "./SecondaryNav";
+import ContactList from "./components/ContactList";
+import Update from "./components/Update";
+import ViewContact from "./components/ViewContact";
 
 function App() {
   return (
-    <>
-      <Header />
-
-      <div className="w-full h-screen flex items-center justify-center bg-gray-200 ">
-        <Arraypractice />
-
-        {/* <Form />  */}
-      </div>
-      <Arraypractice />
-      <SecondaryNav />
-    </>
+    <div className="App w-full h-screen ">
+      <Routes>
+        <Route path="/" element={<ContactList />} />
+        <Route path="contact/edit/:contactid" element={<Update />} />
+        <Route path="contact/view/:contactid" element={<ViewContact />} />
+      </Routes>
+    </div>
   );
 }
 

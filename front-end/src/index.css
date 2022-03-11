@@ -15,11 +15,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-.animated {
-  display: block;
-  animation-duration: 1s;
-  animation-fill-mode: both;
-  opacity: 100%;
-  transition: all 1s ease-in-out;
-  transform: scale(1.2);
-}
