@@ -117,6 +117,7 @@ function ContactList() {
             console.log(data.error);
           } else {
             console.log(data);
+            setSuccess(true);
           }
         })
         .catch((err) => {
@@ -132,8 +133,6 @@ function ContactList() {
           <h1 className="text-3xl text-center font-semibold mb-2">
             Enter Details
           </h1>
-
-          <h1>{url}</h1>
 
           {success && (
             <>

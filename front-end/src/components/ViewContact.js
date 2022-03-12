@@ -38,6 +38,7 @@ function ViewContact() {
         <Oval height="100" width="100" color="#fbbf24" ariaLabel="loading" />
       ) : (
         <>
+          <img className="p-5  h-[500px]" src={contacts.photo} alt="" />
           <h1 className="text-3xl text-center font-normal mb-2">
             <span>Name :</span> {contacts.name}
           </h1>
