@@ -5,40 +5,63 @@ import { Link } from "react-router-dom";
 import Alerts from "./Alerts";
 
 function ContactList() {
-  const [formData, setFormData] = useState({
+  const [formsData, setFormsData] = useState({
     name: "",
     phone: "",
     email: "",
     designation: "",
+    photo: "",
   });
+  const [image, setImage] = useState("");
   const [success, setSuccess] = useState(false);
   const [contacts, setContacts] = useState([]);
+  const [url, setUrl] = useState("");
 
   const changeHandler = (e) => {
-    setFormData({
-      ...formData,
+    setFormsData({
+      ...formsData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const imageHandle = (e) => {
+    setImage(e.target.files[0]);
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     if (
-      formData.name === "" ||
-      formData.phone === "" ||
-      formData.email === "" ||
-      formData.designation === ""
+      formsData.name === "" ||
+      formsData.phone === "" ||
+      formsData.email === "" ||
+      formsData.designation === ""
     ) {
       alert("Please fill all the fields");
       return;
     }
-    const response = await axios.post(
-      "http://localhost:3001/api/contact/new",
-      formData
-    );
-    setSuccess(true);
 
-    console.log(response);
+    //image work
+
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "mern-pratice");
+    data.append("cloud_name", "dzzg7drmz");
+
+    //sync call to cloudinary
+
+    try {
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dzzg7drmz/image/upload",
+        data
+      );
+      setUrl(res.data.url);
+    } catch (err) {
+      console.log(err);
+    }
+
+    console.log(url);
+
+    console.log(formsData);
   };
 
   useEffect(() => {
@@ -71,18 +94,36 @@ function ContactList() {
     }
   };
 
-  const updateContact = async (id) => {
-    const name = prompt("Enter new name");
-    try {
-      const response = await axios.put(
-        `http://localhost:3001/api/contact/${id}`,
-        { name }
-      );
-      console.log(response, "updated");
-    } catch (err) {
-      console.log(err);
+  //api call
+
+  useEffect(() => {
+    if (url) {
+      fetch("http://localhost:3001/api/contact/new", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formsData.name,
+          phone: formsData.phone,
+          email: formsData.email,
+          designation: formsData.designation,
+          photo: url,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            console.log(data.error);
+          } else {
+            console.log(data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  };
+  }, [url]);
 
   return (
     <>
@@ -91,6 +132,8 @@ function ContactList() {
           <h1 className="text-3xl text-center font-semibold mb-2">
             Enter Details
           </h1>
+
+          <h1>{url}</h1>
 
           {success && (
             <>
@@ -107,7 +150,7 @@ function ContactList() {
           <input
             type="text"
             name="name"
-            value={formData.name}
+            value={formsData.name}
             onChange={changeHandler}
             className="border w-full p-2 my-2"
           />
@@ -118,7 +161,7 @@ function ContactList() {
           <input
             type="text"
             name="phone"
-            value={formData.phone}
+            value={formsData.phone}
             onChange={changeHandler}
             className="border w-full p-2 my-2"
           />
@@ -129,7 +172,7 @@ function ContactList() {
           <input
             type="text"
             name="email"
-            value={formData.email}
+            value={formsData.email}
             onChange={changeHandler}
             className="border w-full p-2 my-2"
           />
@@ -140,7 +183,7 @@ function ContactList() {
 
           <select
             name="designation"
-            value={formData.designation}
+            value={formsData.designation}
             onChange={changeHandler}
             className="w-full border p-2 my-2"
             id=""
@@ -152,13 +195,17 @@ function ContactList() {
             <option value="Sales man">Sales man</option>
           </select>
 
+          <label className="my-2" htmlFor="image">
+            Upload Image
+          </label>
+          <input className="my-2" type="file" onChange={imageHandle} />
           <button className="btn bg-amber-400 w-full py-2 my-3 font-medium">
             Save
           </button>
         </form>
       </div>
 
-      <div className="w-[700px]  mx-auto mt-20">
+      <div className="w-[800px]  mx-auto mt-20">
         {contacts.map((contact) => {
           return (
             <div
@@ -172,6 +219,13 @@ function ContactList() {
               <div>
                 <h1>{`Phone :  ${contact.phone}`}</h1>
                 <h1>{`Designation :  ${contact.designation}`}</h1>
+              </div>
+              <div className="d-flex justify-center items-center">
+                <img
+                  className="w-[250px] h-[250px] p-3"
+                  src={contact.photo}
+                  alt=""
+                />
               </div>
 
               <div className="flex flex-col gap-2">

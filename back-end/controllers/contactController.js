@@ -8,6 +8,7 @@ exports.getallcontacts = function (req, res) {
 
 exports.createcontact = async function (req, res) {
   try {
+    console.log(req.body);
     const newcontact = new Contactmanage(req.body);
     const savedcontact = await newcontact.save();
     res.send(savedcontact);

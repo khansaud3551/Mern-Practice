@@ -13,7 +13,12 @@ const contactSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
   designation: {
+    type: String,
+    required: true,
+  },
+  photo: {
     type: String,
     required: true,
   },
