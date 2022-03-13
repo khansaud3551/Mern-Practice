@@ -32,7 +32,7 @@ function CreateContact() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setFormsData({ ...formsData, loading: true });
+
     if (
       formsData.name === "" ||
       formsData.phone === "" ||
@@ -42,6 +42,8 @@ function CreateContact() {
       alert("Please fill all the fields");
       return;
     }
+
+    setFormsData({ ...formsData, loading: true });
 
     //image work
 
